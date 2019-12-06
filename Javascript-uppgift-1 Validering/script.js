@@ -1,78 +1,102 @@
 $(function () {
 
-  $('#errMsg').hide();
+  $('#errMsg').hide()
+
+  let errors = []
+
+  // Validation av bootstrap forms för alla inputs
 
   let validateInput = input => {
     let value = $(input).val();
     let errMsg_id = 'errMsg_' + $(input).attr('id');
     let errMsg_name = $(input).attr('name');
 
-
+    //Radio
+    let radioValue = $('input[name="Gender"]:checked').val()
     //KOLLA VAD DE ÄR FÖR TYP AV INPUT
     switch ($(input).attr('type')) {
       case 'text':
         if (value.length >= 3) {
-          $('#errMsg > li').filter('#' + errMsg_id).remove();
+          removeError(`${errMsg_name} is less than 3 char!`)
           formatValid(input, true)
         }
-        else if ($('#' + errMsg_id).val() === undefined) {
-          $('#errMsg').append(`<li id="${errMsg_id}">${errMsg_name} is less than 3 char!</li>`)
+        else {
           formatValid(input, false)
+          pushError(`${errMsg_name} is less than 3 char!`)
         }
         break;
       case 'password':
         if (value.length >= 3 && $('#password').val() === $('#c_password').val()) {
-          $('#errMsg > li').filter('#errMsg_password').remove();
+          removeError(`Password is less than 3 char! Or doesn't match!`)
           formatValid('#password', true)
           formatValid('#c_password', true)
         }
-        else if ($('#errMsg_password').val() === undefined) {
-          $('#errMsg').append(`<li id="errMsg_password">Password is less than 3 char! Or doesn't match!</li>`)
+        else {
+          pushError(`Password is less than 3 char! Or doesn't match!`)
           formatValid('#password', false)
           formatValid('#c_password', false)
         }
         break;
       case 'email':
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-          $('#errMsg > li').filter('#' + errMsg_id).remove();
+          removeError(`${errMsg_name} is invalid!`)
           formatValid(input, true)
         }
-        else if ($('#' + errMsg_id).val() === undefined) {
-          $('#errMsg').append(`<li id="${errMsg_id}">${errMsg_name} is invalid!</li>`)
+        else {
+          pushError(`${errMsg_name} is invalid!`)
           formatValid(input, false)
         }
         break;
       case 'radio':
-        //HUR
+        if (radioValue !== undefined && $(input).prop('checked')) {
+          removeError(`${errMsg_name} is invalid!`)
+          formatValid(input, true)
+        } else if (radioValue === undefined) {
+          pushError(`${errMsg_name} is invalid!`)
+          formatValid(input, false)
+        }
         break;
       case 'checkbox':
         if ($(input).prop('checked')) {
-          $('#errMsg > li').filter('#' + errMsg_id).remove();
+          removeError(`You must accept ${errMsg_name}!`)
           formatValid(input, true)
-        } else if ($('#' + errMsg_id).val() === undefined) {
-          $('#errMsg').append(`<li id="${errMsg_id}">You must accept ${errMsg_name}!</li>`)
+        } else {
+          pushError(`You must accept ${errMsg_name}!`)
           formatValid(input, false)
         }
         break;
       default:
         if ($(input).attr('id') === 'select') {
           if ($(input).children('option:selected').val() != 'none') {
-            $('#errMsg > li').filter('#' + errMsg_id).remove();
+            removeError(`${errMsg_name} is invalid!`)
             formatValid(input, true)
-          } else if ($('#' + errMsg_id).val() === undefined) {
-            $('#errMsg').append(`<li id="${errMsg_id}">${errMsg_name} is invalid!</li>`)
+          } else {
+            pushError(`${errMsg_name} is invalid!`)
             formatValid(input, false)
           }
         } else if ($(input).attr('id') === 'textarea') {
           if (value.length >= 5) {
-            $('#errMsg > li').filter('#' + errMsg_id).remove();
+            removeError(`${errMsg_name} is invalid!`)
             formatValid(input, true)
-          } else if ($('#' + errMsg_id).val() === undefined) {
-            $('#errMsg').append(`<li id="${errMsg_id}">${errMsg_name} is invalid!</li>`)
+          } else {
+            pushError(`${errMsg_name} is invalid!`)
             formatValid(input, false)
           }
         }
         break;
+    }
+  }
+
+  let pushError = error => {
+    if (!errors.includes(error)) {
+      errors.push(error)
+    }
+  }
+  let removeError = error => {
+    for (var i = errors.length - 1; i >= 0; i--) {
+      if (errors[i] === error) {
+        errors.splice(i, 1);
+      }
     }
   }
 
@@ -89,7 +113,7 @@ $(function () {
 
   //LIVE VALIDATION
   $('input').blur(function () {
-    if ($(this).val() != '' && $(this).attr('type') != 'password') {
+    if ($(this).val() != '' && $(this).attr('type') != 'password' && $(this).attr('type') != 'radio') {
       validateInput('#' + $(this).attr('id'));
     }
   });
@@ -111,6 +135,14 @@ $(function () {
   $(':checkbox').click(function () {
     validateInput('#' + $(this).attr('id'));
   })
+  $(':radio').click(function () {
+    let radios = $('input[name="Gender"]')
+    for (radio of radios) {
+      $(radio).removeClass('is-invalid')
+      $(radio).removeClass('is-valid')
+    }
+    validateInput('#' + $(this).attr('id'))
+  })
   //END LIVE VALIDATION
 
 
@@ -121,9 +153,17 @@ $(function () {
       validateInput(target)
     }
 
-    if ($('#errMsg').children().length === 0)
+    if (errors.length === 0) {
+      console.clear()
       console.log('Data was sent')
-    else
-      console.log('Data was not sent!')
+    }
+
+    else {
+      console.clear()
+      console.log(`Errors: ${errors.length}`)
+      for (error of errors) {
+        console.log(error)
+      }
+    }
   })
 });
