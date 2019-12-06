@@ -1,18 +1,16 @@
 $(function () {
 
-  $('#errMsg').hide()
-
   let errors = []
 
   // Validation av bootstrap forms för alla inputs
 
   let validateInput = input => {
     let value = $(input).val();
-    let errMsg_id = 'errMsg_' + $(input).attr('id');
     let errMsg_name = $(input).attr('name');
 
     //Radio
     let radioValue = $('input[name="Gender"]:checked').val()
+
     //KOLLA VAD DE ÄR FÖR TYP AV INPUT
     switch ($(input).attr('type')) {
       case 'text':
