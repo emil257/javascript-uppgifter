@@ -2,6 +2,10 @@
 $(function () {
 
   let errors = []
+  $("#accept").prop('checked', false);
+  $("#gender1").prop('checked', false);
+  $("#gender2").prop('checked', false);
+  $("#gender3").prop('checked', false);
 
   // Validation av bootstrap forms för alla inputs
 
@@ -13,27 +17,29 @@ $(function () {
       this.email = email
       this.password = password
       this.preference = preference
+
+      //Format gender
       switch (gender) {
         case 'option1':
           this.gender = 'man'
-          break;
+          break
         case 'option2':
           this.gender = 'women'
-          break;
+          break
         case 'option3':
           this.gender = 'unspecified'
-          break;
-
+          break
         default:
-          break;
+          break
       }
+
       this.description = description
     }
   }
 
   let validateInput = input => {
-    let value = $(input).val();
-    let errMsg_name = $(input).attr('name');
+    let value = $(input).val()
+    let errMsg_name = $(input).attr('name')
 
     //Radio
     let radioValue = $('input[name="Gender"]:checked').val()
@@ -128,10 +134,10 @@ $(function () {
   let formatValid = (input, valid) => {
     if (valid) {
       $(input).addClass('is-valid')
-      $(input).removeClass('is-invalid');
+      $(input).removeClass('is-invalid')
     } else {
       $(input).addClass('is-invalid')
-      $(input).removeClass('is-valid');
+      $(input).removeClass('is-valid')
     }
   }
 
@@ -139,22 +145,22 @@ $(function () {
   //LIVE VALIDATION
   $('input').blur(function () {
     if ($(this).attr('type') != 'password' && $(this).attr('type') != 'radio') {
-      validateInput('#' + $(this).attr('id'));
+      validateInput('#' + $(this).attr('id'))
     }
   });
   $(':password').blur(function () {
-    validateInput('#' + $(this).attr('id'));
+    validateInput('#' + $(this).attr('id'))
   })
   $('select').click(function () {
     if ($(this).children('option:selected').val() != 'none') {
-      validateInput('#' + $(this).attr('id'));
+      validateInput('#' + $(this).attr('id'))
     }
   });
   $('textarea').blur(function () {
-    validateInput('#' + $(this).attr('id'));
+    validateInput('#' + $(this).attr('id'))
   });
   $(':checkbox').click(function () {
-    validateInput('#' + $(this).attr('id'));
+    validateInput('#' + $(this).attr('id'))
   })
   $(':radio').click(function () {
     let radios = $('input[name="Gender"]')
@@ -167,7 +173,7 @@ $(function () {
   //END LIVE VALIDATION
 
 
-  $('#oneForm').on('submit', e => {
+  $('#regForm').on('submit', e => {
     e.preventDefault()
 
     for (target of e.currentTarget) {
@@ -186,7 +192,7 @@ $(function () {
       console.log(jsonUser)
 
       //Skicka user till nästa sida!
-      window.location.assign('welcome.html')
+      window.location.assign('login.html')
     }
 
     else {
@@ -195,6 +201,13 @@ $(function () {
       for (error of errors) {
         console.log(error)
       }
+    }
+  })
+  $('#loginForm').on('submit', e => {
+    e.preventDefault()
+    validateInput($('#email'))
+    if (errors.length === 0) {
+      document.body.innerHTML = '<h1 class="text-center mt-5">Error 404, this site dosen´t exist yet!</h1>'
     }
   })
 });

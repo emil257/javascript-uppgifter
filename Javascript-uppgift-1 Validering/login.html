@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>DEMO</title>
+
+</head>
+
+<body>
+  <div class="conainer">
+    <h1 class="text-center mt-5 pl-3 pr-3">Registration complete, sign in here!</h1>
+    <form id="loginForm" class="col-md-8 offset-md-2 col-lg-4 offset-lg-4 mt-5" novalidate>
+      <div class="form-group mb-4">
+        <label for=" email">E-mail</label>
+        <input type="email" class="form-control" id="email" name="Email" autocomplete="off">
+        <div class="invalid-feedback position-absolute">
+          Invalid E-mail!
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="login_password">
+      </div>
+      <div class="form-group mt-4 float-right">
+        <button type="submit" class="btn btn-info">Login!</button>
+      </div>
+    </form>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
