@@ -1,8 +1,35 @@
+
 $(function () {
 
   let errors = []
 
   // Validation av bootstrap forms för alla inputs
+
+  class User {
+    constructor(firstname, lastname, email, password, preference, gender, description) {
+      this.id = new Date()
+      this.firstname = firstname
+      this.lastname = lastname
+      this.email = email
+      this.password = password
+      this.preference = preference
+      switch (gender) {
+        case 'option1':
+          this.gender = 'man'
+          break;
+        case 'option2':
+          this.gender = 'women'
+          break;
+        case 'option3':
+          this.gender = 'unspecified'
+          break;
+
+        default:
+          break;
+      }
+      this.description = description
+    }
+  }
 
   let validateInput = input => {
     let value = $(input).val();
@@ -14,7 +41,7 @@ $(function () {
     //KOLLA VAD DE ÄR FÖR TYP AV INPUT
     switch ($(input).attr('type')) {
       case 'text':
-        if (value.length >= 3) {
+        if (value.length >= 3 && /^[A-Za-z]+$/.test(value)) {
           removeError(`${errMsg_name} is less than 3 char!`)
           formatValid(input, true)
         }
@@ -111,14 +138,12 @@ $(function () {
 
   //LIVE VALIDATION
   $('input').blur(function () {
-    if ($(this).val() != '' && $(this).attr('type') != 'password' && $(this).attr('type') != 'radio') {
+    if ($(this).attr('type') != 'password' && $(this).attr('type') != 'radio') {
       validateInput('#' + $(this).attr('id'));
     }
   });
   $(':password').blur(function () {
-    if ($(this).val() != '' && $('#c_password').val() != '' && $('#password').val() != '') {
-      validateInput('#' + $(this).attr('id'));
-    }
+    validateInput('#' + $(this).attr('id'));
   })
   $('select').click(function () {
     if ($(this).children('option:selected').val() != 'none') {
@@ -126,9 +151,7 @@ $(function () {
     }
   });
   $('textarea').blur(function () {
-    if ($(this).val() != '') {
-      validateInput('#' + $(this).attr('id'));
-    }
+    validateInput('#' + $(this).attr('id'));
   });
   $(':checkbox').click(function () {
     validateInput('#' + $(this).attr('id'));
@@ -153,7 +176,17 @@ $(function () {
 
     if (errors.length === 0) {
       console.clear()
-      console.log('Data was sent')
+      let jsonUser = JSON.stringify(new User(e.currentTarget[0].value,
+        e.currentTarget[1].value,
+        e.currentTarget[2].value,
+        e.currentTarget[3].value,
+        e.currentTarget[5].value,
+        $('input[name="Gender"]:checked').val(),
+        e.currentTarget[9].value))
+      console.log(jsonUser)
+
+      //Skicka user till nästa sida!
+      window.location.assign('welcome.html')
     }
 
     else {
